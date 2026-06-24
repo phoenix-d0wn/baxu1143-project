@@ -45,6 +45,7 @@ void displayLockers(Locker lockers[], int currentCount);
 void sortLockerId(Locker locker[], const int& low, const int& high);
 int partition(Locker locker[], const int& low, const int& high);
 int getValidatedInteger();
+void searchReservation(Locker lockers[], int currentCount);
 
 
 // MAIN FUNCTION
@@ -63,7 +64,7 @@ int main() {
         cout << "1. Add Locker Reservation" << endl;
         cout << "2. Display Locker Reservations" << endl; // Updated placeholder 
         cout << "3. Sort Reservations" << endl;
-        cout << "4. Search Reservations (Under Construction)" << endl;
+        cout << "4. Search Reservations" << endl;
         cout << "5. Exit" << endl;
         cout << "Enter your choice (1-5): ";
 
@@ -79,10 +80,10 @@ int main() {
             displayLockers(gymLockers, currentReservations);
             break;
         case 3:
-            sortLockerId(gymLockers, 0, currentReservations-1);
+            sortLockerId(gymLockers, 0, currentReservations - 1);
             break;
         case 4:
-            cout << "\n[Notice] Searching feature is not implemented yet." << endl;
+            searchReservation(gymLockers, currentReservations);
             break;
         case 5:
             cout << "\nExiting system. Thank you!" << endl;
@@ -168,8 +169,8 @@ void sortLockerId(Locker locker[], const int& low, const int& high) {
     if (low < high) {
 
         int pivotIndex = partition(locker, low, high);
-        sortLockerId(locker, low, pivotIndex-1);
-        sortLockerId(locker, pivotIndex+1, high);
+        sortLockerId(locker, low, pivotIndex - 1);
+        sortLockerId(locker, pivotIndex + 1, high);
     }
 }
 
@@ -193,11 +194,11 @@ int partition(Locker locker[], const int& low, const int& high) {
     }
 
     // move the last element to index i+1
-    Locker temp = locker[i+1];
-    locker[i+1] = locker[high];
+    Locker temp = locker[i + 1];
+    locker[i + 1] = locker[high];
     locker[high] = temp;
 
-    return i+1;
+    return i + 1;
 }
 
 /**
@@ -227,3 +228,36 @@ void displayLockers(Locker lockers[], int currentCount) {
     }
 }
 
+/**
+ * Made by (B152510138) MUHAMMAD DARWISY BIN SHAMSOLANOR
+ * Function: searchReservation
+ * Searches for a specific locker reservation by Locker ID.
+ * Use Linear Search technique to find the locker.
+ * If no lockers are matched, an appropriate message is shown.
+ */
+
+void searchReservation(Locker lockers[], int currentCount) {
+    if (currentCount == 0) {
+        cout << "\n[Notice] No locker reservations found in the system." << endl;
+        return;
+    }
+    int lockerId;
+    bool found = false;
+
+    cout << "\nEnter Locker ID to search: ";
+    lockerId = getValidatedInteger();
+
+    for (int i = 0; i < currentCount; i++) {
+        if (lockers[i].getLockerId() == lockerId) {
+            cout << "\n--- LOCKER RESERVATION FOUND ---" << endl;
+            cout << "Locker ID       : " << lockers[i].getLockerId() << endl;
+            cout << "Member Name     : " << lockers[i].getMemberName() << endl;
+            cout << "Rental Duration : " << lockers[i].getDuration() << endl;
+            found = true;
+            break; // Exit loop after finding the first match
+        }
+    }
+    if (!found) {
+        cout << "\n[Notice] No reservation found for Locker ID: " << lockerId << endl;
+    }
+}
