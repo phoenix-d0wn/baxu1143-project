@@ -4,7 +4,9 @@
 
 using namespace std;
 
+// ==========================================
 // CLASS DEFINITION
+// ==========================================
 
 class Locker {
 private:
@@ -22,7 +24,6 @@ public:
         isReserved = false;
     }
 
-
     void setLockerDetails(int id, string name, string dur) {
         lockerId = id;
         memberName = name;
@@ -30,15 +31,15 @@ public:
         isReserved = true;
     }
 
-
     int getLockerId() { return lockerId; }
     string getMemberName() { return memberName; }
     string getDuration() { return duration; }
     bool getReservationStatus() { return isReserved; }
 };
 
-
+// ==========================================
 // FUNCTION DECLARATIONS 
+// ==========================================
 
 void addLockerReservation(Locker lockers[], int& currentCount, int maxCapacity);
 void displayLockers(Locker lockers[], int currentCount);
@@ -47,12 +48,13 @@ int partition(Locker locker[], const int& low, const int& high);
 int getValidatedInteger();
 void searchReservation(Locker lockers[], int currentCount);
 
-
+// ==========================================
 // MAIN FUNCTION
+// ==========================================
 
 int main() {
     const int MAX_LOCKERS = 50;
-    Locker gymLockers[MAX_LOCKERS]; // Array [cite: 21]
+    Locker gymLockers[MAX_LOCKERS]; // Array
     int currentReservations = 0; //  current  reserved lockers
     int choice;
 
@@ -62,7 +64,7 @@ int main() {
         cout << "  GYM LOCKER RESERVATION SYSTEM      " << endl;
         cout << "=====================================" << endl;
         cout << "1. Add Locker Reservation" << endl;
-        cout << "2. Display Locker Reservations" << endl; // Updated placeholder 
+        cout << "2. Display Locker Reservations" << endl; 
         cout << "3. Sort Reservations" << endl;
         cout << "4. Search Reservations" << endl;
         cout << "5. Exit" << endl;
@@ -76,11 +78,12 @@ int main() {
             addLockerReservation(gymLockers, currentReservations, MAX_LOCKERS);
             break;
         case 2:
-            // Integrated your function call directly here
             displayLockers(gymLockers, currentReservations);
             break;
         case 3:
             sortLockerId(gymLockers, 0, currentReservations - 1);
+            // Tambah mesej berjaya supaya user tahu proses sort telah selesai
+            cout << "\nSuccess: Lockers have been sorted by ID (Ascending)." << endl;
             break;
         case 4:
             searchReservation(gymLockers, currentReservations);
@@ -96,6 +99,9 @@ int main() {
     return 0;
 }
 
+// ==========================================
+// FUNCTION DEFINITIONS
+// ==========================================
 
 int getValidatedInteger() {
     int input;
@@ -124,7 +130,7 @@ int getValidatedInteger() {
  * Made by MUHAMMAD AIZAT AQMAL BIN ZAINUDDIN
  * Function: addLockerReservation
  * user input to create a new gym locker reservation.
- * Prevents array overflow and cleans input streams.
+ * Prevents array overflow, duplicate IDs, and cleans input streams.
  */
 void addLockerReservation(Locker lockers[], int& currentCount, int maxCapacity) {
     // PREVENT OVERFLOW:
@@ -136,12 +142,27 @@ void addLockerReservation(Locker lockers[], int& currentCount, int maxCapacity) 
     int id;
     string name;
     string dur;
+    bool isTaken; // Pembolehubah untuk semak status ID
 
     cout << "\n--- ADD NEW LOCKER RESERVATION ---" << endl;
-    cout << "Enter Locker ID Number (numeric only): ";
-    id = getValidatedInteger(); // Safely gets integer and clears stream up to the newline
+    
+    // Semakan Duplicate ID menggunakan gelung (loop)
+    do {
+        isTaken = false; // Reset status setiap kali loop
+        cout << "Enter Locker ID Number (numeric only): ";
+        id = getValidatedInteger(); // Safely gets integer and clears stream up to the newline
 
-    cin.ignore();
+        // Loop untuk semak setiap locker yang dah ada
+        for (int i = 0; i < currentCount; i++) {
+            if (lockers[i].getLockerId() == id) {
+                cout << "Error: Locker ID " << id << " is already taken! Please choose another ID.\n" << endl;
+                isTaken = true; // Tandakan ID ini dah diambil
+                break; // Berhenti semak dan ulang semula do-while
+            }
+        }
+    } while (isTaken); // Akan ulang minta ID selagi ID itu 'isTaken'
+
+    cin.ignore(); // Clear the \n left by cin >> input before using getline
 
     cout << "Enter Member Full Name: ";
     getline(cin, name);
